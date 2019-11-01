@@ -1,0 +1,20 @@
+A faire en premier :
+création de user 
+Connexion
+inscription
+
+ 
+
+créér une entité tickets:
+user_id
+title
+date de publication
+
+créér une entité messages:
+ticket-id
+content
+publication date
+
+créér un admin et des users avec les fixtures
+
+
