@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TicketController!{% endblock %}
+
+{% block body %}
+
+<a href="#" class="btn btn-primary btn-lg btn-block mt-5 mb-5">Create a new ticket</a>
+
+{% if is_granted('ROLE_ADMIN') %}
+
+<div class="card text-center">
+  <div class="card-body">
+    <b>Here is the list of all the tickets : There is actually {{tickets|length}} tickets .</b>
+  </div>
+</div>
+
+
+
+
+
+<div class="row">
+{% for ticket in tickets %}
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+      <div class="card-header mt-3 mb-2">
+    <a href="#" class="btn btn-warning mr-3">Edit the ticket</a>
+        <a href="#" class="btn btn-danger">Suppress the ticket</a>
+
+  </div>
+        <h5 class="card-title">{{ticket.title}}</h5>
+        <p class="card-text">{{ticket.description}}</p>
+    <a href={{ path('ticket_show',{id:ticket.id}) }} class="btn btn-primary mt-3 mb-3">Go see the ticket</a>
+    <div class="card-footer text-muted">
+    {{ticket.createdAt|date("m/d/Y")}}
+  </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+
+
+{% else %}
+<div class="card">
+  <div class="card-body">
+    Here is the tickets you are the author
+  </div>
+</div>
+
+
+<div class="row">
+{% for ticket in tickets %}
+    <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ticket.title}}</h5>
+        <p class="card-text">{{ticket.description}}</p>
+    <a href={{ path('ticket_show',{id:ticket.id}) }} class="btn btn-primary mt-3 mb-3">Go see the ticket</a>
+    <div class="card-footer text-muted">
+    {{ticket.createdAt|date("m/d/Y")}}
+  </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+
+<div class="card">
+  <div class="card-body">
+    Here is the tickets you are assign to 
+  </div>
+</div>
+
+<div class="row">
+{% for ticket in ticketAssigns %}
+ <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+            <h5 class="card-title">{{ticket.title}}</h5>
+            <p class="card-text">{{ticket.description}}</p>
+            <a href={{ path('ticket_show',{id:ticket.id}) }} class="btn btn-primary mt-3 mb-3">Go see the ticket</a>
+            <div class="card-footer text-muted">
+                {{ticket.createdAt|date("m/d/Y")}}
+            </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+    </div>
+{% endif %}
+
+
+
+
+
+
+{% endblock %}

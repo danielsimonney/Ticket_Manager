@@ -39,9 +39,20 @@ class Ticket
      */
     private $tickets_assignment;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Message", mappedBy="ticket", orphanRemoval=true)
+     */
+    private $messages;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $description;
+
     public function __construct()
     {
         $this->tickets_assignment = new ArrayCollection();
+        $this->messages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -107,6 +118,49 @@ class Ticket
         if ($this->tickets_assignment->contains($ticketsAssignment)) {
             $this->tickets_assignment->removeElement($ticketsAssignment);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Message[]
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): self
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages[] = $message;
+            $message->setTicket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): self
+    {
+        if ($this->messages->contains($message)) {
+            $this->messages->removeElement($message);
+            // set the owning side to null (unless already changed)
+            if ($message->getTicket() === $this) {
+                $message->setTicket(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

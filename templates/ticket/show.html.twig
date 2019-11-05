@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>In developpment </h1>
+
+{% for message in messages %}
+    <div> {{message.user.firstname}} </div>
+    <div> {{message.user.lastname}} </div>
+
+    <div class="container">
+    <div class="message-blue">
+        <p class="message-content">This is an awesome message!</p>
+        <div class="message-timestamp-left">SMS 13:37</div>
+    </div>
+    
+    <div class="message-orange">
+        <p class="message-content">I agree that your message is awesome!</p>
+        <div class="message-timestamp-right">SMS 13:37</div>
+    </div>
+    
+    <div class="message-blue">
+        <p class="message-content">Thanks!</p>
+        <div class="message-timestamp-left">SMS 13:37</div>
+    </div>
+</div>
+
+{% endfor %}
+{% endblock %}
