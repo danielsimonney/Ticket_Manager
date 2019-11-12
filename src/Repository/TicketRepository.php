@@ -28,6 +28,17 @@ class TicketRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findAllNonAssign($assign,$author){
+        return $this
+            ->createQueryBuilder('f')
+            ->setParameter('file', $file)
+            ->setParameter('state', $state)
+            ->getQuery()->getSingleScalarResult();
+
+    }
+
+    
+
    
 
     // /**

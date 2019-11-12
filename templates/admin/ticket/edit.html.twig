@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}edition Ticket{% endblock %}
+
+{% block body %}
+<pre>
+    {{ dump(ticket) }}
+</pre>
+Un ticket de {{ticket.author}}
+
+{{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">{{ button_label|default('save the ticket') }}</button>
+    {{ form_end(form) }}
+
+click on the user you want to assign it to the current ticket .
+
+ <ul class="list-group">
+    {% for user in users %}
+    
+  <li class="list-group-item">
+ {{user.firstname}} {{user.lastname}} 
+ <form method="post" action="{{ path('add_assignment', {'id_ticket': ticket.id,'id_user': user.id}) }}" onsubmit="return confirm('Are you sure you want to enable {{user.firstname}} {{user.lastname}} to see the current ticket ?');">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('add' ~ ticket.id) }}">
+    <button class="btn btn-outline-warning mr-3">assign this user to the current ticket</button>
+</form>
+ </li>
+    {% endfor %}
+    </ul>
+
+
+    {% endblock %}

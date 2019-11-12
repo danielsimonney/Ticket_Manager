@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MessageRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Message
 {
@@ -37,6 +39,21 @@ class Message
      * @ORM\JoinColumn(nullable=false)
      */
     private $ticket;
+
+
+    /**
+     * permet d'initialiser la date avant de créer un message !
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     * 
+     * @return void
+     */
+    public function initializeDate(){
+        if(empty($this->created_at)){
+            $this->created_at=new DateTime();
+        }
+    }
 
     public function getId(): ?int
     {

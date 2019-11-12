@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}new Ticket{% endblock %}
+
+{% block body %}
+
+{{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">{{ button_label|default('create the ticket') }}</button>
+    {{ form_end(form) }}
+
+    {% endblock %}

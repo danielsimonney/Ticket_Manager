@@ -69,6 +69,12 @@ class User implements UserInterface
         $this->messages = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->firstname." ".$this->lastname;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;

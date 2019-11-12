@@ -75,7 +75,6 @@ class AppFixtures extends Fixture
 
             }
 
-
         }
 
 
@@ -86,7 +85,6 @@ class AppFixtures extends Fixture
             $singleTicket->addTicketsAssignment($firstUserToAssign);
             $singleTicket->addTicketsAssignment($secondUserToAssign);
         }
-
         $manager->flush();
     }
 }

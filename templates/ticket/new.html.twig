@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}new Ticket{% endblock %}
+
+{% block body %}
+<div class="card mt-4 mb-3">
+  
+  <div class="card-body">
+    <h5 class="card-title">Create your new ticket here</h5>In title put the subject of your ticket and in description make a fast description of your problem .</p>
+  </div>
+</div>
+
+{{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">{{ button_label|default('create the ticket') }}</button>
+    {{ form_end(form) }}
+{% endblock %}

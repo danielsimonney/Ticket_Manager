@@ -1,28 +1,74 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h1>In developpment </h1>
-
-{% for message in messages %}
-    <div> {{message.user.firstname}} </div>
-    <div> {{message.user.lastname}} </div>
-
-    <div class="container">
-    <div class="message-blue">
-        <p class="message-content">This is an awesome message!</p>
-        <div class="message-timestamp-left">SMS 13:37</div>
-    </div>
-    
-    <div class="message-orange">
-        <p class="message-content">I agree that your message is awesome!</p>
-        <div class="message-timestamp-right">SMS 13:37</div>
-    </div>
-    
-    <div class="message-blue">
-        <p class="message-content">Thanks!</p>
-        <div class="message-timestamp-left">SMS 13:37</div>
-    </div>
+<h1>{{ticket.title}} </h1>
+<div class="card">
+  <div class="card-body description">
+    Description : {{ticket.description}}
+  </div>
 </div>
 
+{% if is_granted('ROLE_ADMIN') %}
+Il y'a {{ticket.ticketsAssignment|length}} utilisateurs assignés à ce ticket , ce sont {% for user in ticket.ticketsAssignment %}
+    le user {{user.firstname}} {{user.lastname}} {% if loop.last == false %},{% endif %}
+{% endfor %}.
+   
+{% for message in messages %}
+
+   
+<div class="{% if loop.index is odd%}container{% else %}container darker{% endif %}">
+<div class="card-header mt-3 mb-2">
+    <form method="post" action="{{ path('message_supress', {'id': message.id}) }}" onsubmit="return confirm('Are you sure you want to delete the message?');">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ message.id) }}">
+    <button class="btn btn-danger mr-3">Suppress the message</button>
+</form>
+
+        <a href={{ path('message_edit',{id:message.id}) }} class="btn btn-warning">edit</a>
+
+  </div>
+  <div class="card mb-5" style="width: 18rem;">
+  
+  <div class="card-body">
+  {{message.user.firstname}}
+  {{message.user.lastname}}
+
+  </div>
+  </div>
+  <p>{{message.content}}</p>
+  <span class="time-right">{{message.createdAt|date('m/d/Y')}} at {{message.createdAt|date('h:i:s A')}}</span>
+</div>
 {% endfor %}
+
+{% else %}
+{% for message in messages %}
+
+   
+<div class="{% if loop.index is odd%}container{% else %}container darker{% endif %}">
+  <div class="card mb-5" style="width: 18rem;">
+  <div class="card-body">
+  {{message.user.firstname}}
+  {{message.user.lastname}}
+
+  </div>
+  </div>
+  <p>{{message.content}}</p>
+  <span class="time-right">{{message.createdAt|date('m/d/Y')}} at {{message.createdAt|date('h:i:s A')}}</span>
+</div>
+{% endfor %}
+
+{% endif %}
+
+{{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">{{ button_label|default('send') }}</button>
+    {{ form_end(form) }}
+
+{% endblock %}
+
+
+
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/test.css') }}" />
 {% endblock %}
