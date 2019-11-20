@@ -58,6 +58,7 @@ class AppFixtures extends Fixture
                 $ticket=new Ticket;
                 $ticket->setAuthor($user)
                         ->setCreatedAt($faker->dateTime)
+                        ->setStatus("en cours")
                         ->setDescription($faker->text(70))
                         ->setTitle($faker->text(15));
                         $manager->persist($ticket);
@@ -65,6 +66,7 @@ class AppFixtures extends Fixture
                 $ticketList[] = $ticket;
                 for ($m=0; $m < mt_rand(3,5) ; $m++) { 
                     $message=new Message;
+
                     $message->setCreatedAt($faker->dateTime)
                             ->setContent($faker->text(300))
                             ->setUser($user)

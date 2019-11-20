@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TicketController extends AbstractController
 {
     /**
-     * @Route("/ticket", name="homepage",methods={"GET"})
+     * @Route("/", name="homepage",methods={"GET"})
      */
     public function index(TicketRepository $ticketRepository): Response
     {
@@ -51,11 +51,21 @@ class TicketController extends AbstractController
      public function new(Request $request,ObjectManager $manager){
         $ticket=new Ticket;
         $ticket->setAuthor($this->getUser());
-        $form=$this->createForm(TicketType::class,$ticket);
+        $user=$this->getUser();
+        if(in_array("ROLE_ADMIN", $user->getRoles())){
+            $form=$this->createForm(TicketType::class,$ticket,array(
+                'AutorizeAssign' => true
+            ));
+        }else{
+            $form=$this->createForm(TicketType::class,$ticket);
+
+        }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $manager->persist($ticket);
             $manager->flush();
+            $id=$ticket->getId();
+            return $this->redirectToRoute('ticket_show',['id'=>$id]);
         }
         return $this->render('ticket/new.html.twig', [
             'form' => $form->createView()
@@ -71,6 +81,9 @@ class TicketController extends AbstractController
 
      public function show(Ticket $ticket,MessageRepository $MessageRepo,$id,ObjectManager $manager,Request $request): Response
      {
+        if($this->hasPermission($id)){
+
+        
         $newMessage=new Message();
         $newMessage->setUser($this->getUser());
         $newMessage->setTicket($ticket);
@@ -84,7 +97,7 @@ class TicketController extends AbstractController
 
          $messages=$MessageRepo->findBy(
              ["ticket"=>$id],
-             ['created_at' => 'DESC']
+             ['created_at' => 'ASC']
          );
          dump($messages);
          dump($ticket->getTicketsAssignment());
@@ -96,7 +109,37 @@ class TicketController extends AbstractController
             'form' => $form->createView()
 
         ]);
+
+        }else{
+            $this->addFlash('warning', 'You dont have the rigths for this ticket');
+        return $this->redirectToRoute('homepage');
+        }
+    }
         
+     
+
+     /**
+      * function qui va me servir à vérifier si l'utilisateur courant a le droit d'avoir accès au ticket ou non.
+      * @return boolean
+      */
+
+     private function hasPermission($id){
+         $user=$this->getUser();
+        if(in_array("ROLE_ADMIN", $user->getRoles())){
+            return true;
+        }
+        foreach ($this->getUser()->getTicketsAssignments() as $key => $value) {
+           if($value->getId()==$id){
+               return true;
+           }
+        }
+
+        foreach ($this->getUser()->getTickets() as $key => $value) {
+            if($value->getId()==$id){
+                return true;
+            }
+        }
+        return false;
      }
 }
 

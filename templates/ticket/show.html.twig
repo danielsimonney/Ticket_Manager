@@ -58,11 +58,16 @@ Il y'a {{ticket.ticketsAssignment|length}} utilisateurs assignés à ce ticket ,
 {% endfor %}
 
 {% endif %}
+{% if ticket.status =="en cours" %}
+
+
 
 {{ form_start(form) }}
         {{ form_widget(form) }}
         <button class="btn btn-primary">{{ button_label|default('send') }}</button>
     {{ form_end(form) }}
+
+    {% endif %}
 
 {% endblock %}
 
@@ -70,5 +75,5 @@ Il y'a {{ticket.ticketsAssignment|length}} utilisateurs assignés à ce ticket ,
 
 
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ asset('css/test.css') }}" />
+<link rel="stylesheet" href="{{ asset('css/message.css') }}" />
 {% endblock %}

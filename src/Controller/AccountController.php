@@ -2,10 +2,14 @@
 
 namespace App\Controller;
 
+
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Form\ResetPasswordType;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 class AccountController extends AbstractController
 {
@@ -21,30 +25,39 @@ class AccountController extends AbstractController
         ]);
     }
 
+    
 
-    public function editAction(Request $request)
+    /**
+     * @Route("/account/change", name="passwordChange")
+     */
+
+    public function editAction(Request $request,UserPasswordEncoderInterface $passwordEncoder)
     {
     	$em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
-    	$form = $this->createForm(ResetPasswordType::class, $user);
+        $form = $this->createForm(ResetPasswordType::class);
 
     	$form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $passwordEncoder = $this->get('security.password_encoder');
-            $oldPassword = $request->request->get('etiquettebundle_user')['oldPassword'];
+        if ($form->isSubmitted() && $form->isValid() ) {
+            $passwordEncoder = $passwordEncoder;
+            $oldPassword = $request->request->get('reset_password')["oldPassword"];
 
             // Si l'ancien mot de passe est bon
             if ($passwordEncoder->isPasswordValid($user, $oldPassword)) {
-                $newEncodedPassword = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
-                $user->setPassword($newEncodedPassword);
+                $user->setPassword(
+                    $passwordEncoder->encodePassword(
+                        $user,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
+            
                 
                 $em->persist($user);
                 $em->flush();
 
                 $this->addFlash('notice', 'Votre mot de passe à bien été changé !');
 
-                return $this->redirectToRoute('profile');
+                return $this->redirectToRoute('account');
             } else {
                 $form->addError(new FormError('Ancien mot de passe incorrect'));
             }
@@ -55,4 +68,15 @@ class AccountController extends AbstractController
     	));
     }
 
+
+    // /**
+    //  * @Route("/account/change", name="passwordChange")
+    //  */
+    // public function edit(){
+
+    // }
+
 }
+
+
+

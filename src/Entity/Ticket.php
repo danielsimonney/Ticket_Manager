@@ -3,13 +3,15 @@
 namespace App\Entity;
 
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TicketRepository")
  * @ORM\HasLifecycleCallbacks
+ * @UniqueEntity("title")
  */
 class Ticket
 {
@@ -52,6 +54,11 @@ class Ticket
     private $description;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $status;
+
+    /**
      * permet d'initialiser la date avant de créer un message !
      *
      * @ORM\PrePersist
@@ -59,9 +66,10 @@ class Ticket
      * 
      * @return void
      */
-    public function initializeDate(){
+    public function initializeDateAndStatus(){
         if(empty($this->created_at)){
             $this->created_at=new DateTime();
+            $this->status="en cours";
         }
     }
 
@@ -183,6 +191,18 @@ class Ticket
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

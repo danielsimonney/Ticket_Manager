@@ -10,6 +10,8 @@ use App\Form\MessageType;
 use App\Form\TicketType;
 use App\Repository\TicketRepository;
 use App\Repository\UserRepository;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,19 +19,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AdminController extends AbstractController
 {
-
-
-
     /**
      * @Route("admin", name="admin_index")
      */
     public function index(UserRepository $user){
         $users=$user->findAll();
-
         return $this->render('admin/index.html.twig', [
             'users' => $users,
         ]);
-
     }
 
 
@@ -77,7 +74,7 @@ class AdminController extends AbstractController
         
 
         return $this->render('admin/ticket/edit.html.twig', [
-            'ticket' => $ticket,
+            'ticket' => $ticket, 
             'form' => $form->createView(),
             'users'=>$listUsers
         ]);
@@ -93,14 +90,9 @@ class AdminController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($ticket);
             $entityManager->flush();
-        }else{
-            die("bouhou");
         }
-
         return $this->redirectToRoute('homepage');
     }
-
-
 
     /**
      * @Route("admin/message/edit/{id}", name="message_edit")
@@ -148,7 +140,6 @@ class AdminController extends AbstractController
     public function AssignView(Request $request,User $user,TicketRepository $ticketsrepo): Response
     {
         $listTickets=$ticketsrepo->findAll();
-
         foreach ($listTickets as $key => $ticket) {
             foreach ($user->getTicketsAssignments() as $key => $ticketAssign) {
               if($ticket==$ticketAssign){
@@ -213,16 +204,36 @@ class AdminController extends AbstractController
     ]);
    }
 
+    /**
+     * @Route("admin/message/done/{id}", name="ticket_resolve")
+     */
 
+     public function resolveTicket(Request $request, Ticket $ticket,ObjectManager $em): Response
+        {
+            $ticket->setStatus("done");
+            $em->persist($ticket);
+            $em->flush();
+            return $this->redirectToRoute('ticket_show',['id'=>$ticket->getId()]);
+     }
 
+     /**
+     * @Route("admin/message/open/{id}", name="ticket_reopen")
+     */
 
+     public function reopenTicket(Request $request, Ticket $ticket,ObjectManager $em): Response
+        {
+            $ticket->setStatus("en cours");
+            $em->persist($ticket);
+            $em->flush();
+            return $this->redirectToRoute('ticket_show',['id'=>$ticket->getId()]);
+     }
 
-    
-
-    
-
-    
-
-
+    //  /**
+    //  * @Route("admin/message/open/{id}", name="ticket_reopen")
+    //  */
+    // public function grantedAdmin(): Response
+    // {
+        
+    // }
 
 }
