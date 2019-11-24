@@ -9,6 +9,7 @@ use App\Form\MessageType;
 use App\Form\TicketType;
 use App\Repository\MessageRepository;
 use App\Repository\TicketRepository;
+use App\Service\UploaderHelper;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,9 +35,7 @@ class TicketController extends AbstractController
         );
         }
         
-        dump($ticket);
          $assign=$user->getTicketsAssignments()->getValues();
-         dump($assign);
         return $this->render('ticket/index.html.twig', [
             'controller_name' => 'TicketController',
             'tickets'=>$ticket,
@@ -79,17 +78,23 @@ class TicketController extends AbstractController
      * @Route("/ticket/{id}", name="ticket_show", methods={"GET","POST"})
      */
 
-     public function show(Ticket $ticket,MessageRepository $MessageRepo,$id,ObjectManager $manager,Request $request): Response
+     public function show(Ticket $ticket,MessageRepository $MessageRepo,$id,ObjectManager $manager,Request $request,UploaderHelper $uploaderHelper): Response
      {
         if($this->hasPermission($id)){
-
-        
         $newMessage=new Message();
         $newMessage->setUser($this->getUser());
         $newMessage->setTicket($ticket);
-        $form=$this->createForm(MessageType::class,$newMessage);
+        $form=$this->createForm(MessageType::class,$newMessage,array(
+            'upload'=> true
+        ));
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+              /** @var UploadedFile $brochureFile */
+              $ressource = $form['ressource']->getData();
+              if ($ressource) {
+                  $ressourceName = $uploaderHelper->upload($ressource);
+                  $newMessage->setRessource($ressourceName);
+              }
             $manager->persist($newMessage);
             $manager->flush();
             return $this->redirectToRoute('ticket_show',['id'=>$id]);
@@ -99,9 +104,7 @@ class TicketController extends AbstractController
              ["ticket"=>$id],
              ['created_at' => 'ASC']
          );
-         dump($messages);
-         dump($ticket->getTicketsAssignment());
-
+        
 
         return $this->render('ticket/show.html.twig', [
             'ticket'=>$ticket,

@@ -76,7 +76,6 @@ class AppFixtures extends Fixture
                 }
 
             }
-
         }
 
 

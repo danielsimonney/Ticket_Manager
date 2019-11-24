@@ -32,10 +32,9 @@
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ticket.id) }}">
     <button class="btn btn-outline-danger mr-3">Suppress the ticket</button>
 </form>
-{% if ticket.status == "en cours" %}
+{% if ticket.opened %}
  <a href="{{ path('ticket_resolve', {'id': ticket.id}) }}" class="btn btn-outline-success mr-3 mt-4">Mark the ticket as done</a>
-{% endif %}
-{% if ticket.status == "done" %}
+{% else %}
  <a href="{{ path('ticket_reopen', {'id': ticket.id}) }}" class="btn btn-warning mr-3 mt-4">Reopen the ticket</a>
 {% endif %}
 
@@ -108,9 +107,6 @@
 {% endfor %}
 </div>
 {% endif %}
-
-
-
 
 
 

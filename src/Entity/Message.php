@@ -40,6 +40,11 @@ class Message
      */
     private $ticket;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $ressource;
+
 
     /**
      * permet d'initialiser la date avant de créer un message !
@@ -104,6 +109,18 @@ class Message
     public function setTicket(?Ticket $ticket): self
     {
         $this->ticket = $ticket;
+
+        return $this;
+    }
+
+    public function getRessource(): ?string
+    {
+        return $this->ressource;
+    }
+
+    public function setRessource(?string $ressource): self
+    {
+        $this->ressource = $ressource;
 
         return $this;
     }

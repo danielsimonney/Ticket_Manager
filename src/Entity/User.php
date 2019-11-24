@@ -66,6 +66,17 @@ class User implements UserInterface
      */
     private $lastname;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Image(
+     *     minWidth = 200,
+     *     maxWidth = 400,
+     *     minHeight = 200,
+     *     maxHeight = 400
+     * )
+     */
+    private $ProfileImage;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
@@ -267,6 +278,18 @@ class User implements UserInterface
     public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function getProfileImage(): ?string
+    {
+        return $this->ProfileImage;
+    }
+
+    public function setProfileImage(?string $ProfileImage): self
+    {
+        $this->ProfileImage = $ProfileImage;
 
         return $this;
     }

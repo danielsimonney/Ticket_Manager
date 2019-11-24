@@ -36,6 +36,12 @@ Il y'a {{ticket.ticketsAssignment|length}} utilisateurs assignés à ce ticket ,
   </div>
   </div>
   <p>{{message.content}}</p>
+  {% if message.ressource != null %}
+  <a href={{ asset('uploads/' ~ message.ressource) }}>
+{{message.ressource}}
+  </a>
+  {% endif %}
+  
   <span class="time-right">{{message.createdAt|date('m/d/Y')}} at {{message.createdAt|date('h:i:s A')}}</span>
 </div>
 {% endfor %}
@@ -53,12 +59,18 @@ Il y'a {{ticket.ticketsAssignment|length}} utilisateurs assignés à ce ticket ,
   </div>
   </div>
   <p>{{message.content}}</p>
+  {% if message.ressource != null %}
+  <a href={{ asset('uploads/' ~ message.ressource) }}>
+{{message.ressource}}
+  </a>
+  {% endif %}
+  
   <span class="time-right">{{message.createdAt|date('m/d/Y')}} at {{message.createdAt|date('h:i:s A')}}</span>
 </div>
 {% endfor %}
 
 {% endif %}
-{% if ticket.status =="en cours" %}
+{% if ticket.status is constant('open',ticket) %}
 
 
 
@@ -77,3 +89,6 @@ Il y'a {{ticket.ticketsAssignment|length}} utilisateurs assignés à ce ticket ,
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ asset('css/message.css') }}" />
 {% endblock %}
+
+
+

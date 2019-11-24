@@ -15,6 +15,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Ticket
 {
+    const open="ouvert";
+    const ferme="résolu";
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -69,7 +72,20 @@ class Ticket
     public function initializeDateAndStatus(){
         if(empty($this->created_at)){
             $this->created_at=new DateTime();
-            $this->status="en cours";
+            $this->status=self::open;
+        }
+    }
+
+    /**
+     * Fonction permettant voir si un ticket est ouvert ou non
+     *
+     * @return boolean
+     */
+    public function isOpened(){
+        if($this->status==self::open){
+            return true;
+        }else{
+            return false;
         }
     }
 

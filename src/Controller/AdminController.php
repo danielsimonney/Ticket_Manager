@@ -10,6 +10,7 @@ use App\Form\MessageType;
 use App\Form\TicketType;
 use App\Repository\TicketRepository;
 use App\Repository\UserRepository;
+use App\Service\RemoveElem;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,9 +47,11 @@ class AdminController extends AbstractController
     /**
      * @Route("admin/ticket/edit/{id}", name="ticket_edit")
      */
-    public function editTicket(Ticket $ticket,Request $request,UserRepository $userRepo): Response
+    public function editTicket(Ticket $ticket,Request $request,UserRepository $userRepo,RemoveElem $remove): Response
     {
-        $form = $this->createForm(TicketType::class, $ticket);
+        $form=$this->createForm(TicketType::class,$ticket,array(
+            'AutorizeAssign' => true
+        ));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -57,26 +60,11 @@ class AdminController extends AbstractController
         }
 
         $listUsers=$userRepo->findAll();
-
-        foreach ($listUsers as $key => $user) {
-            foreach ($ticket->getTicketsAssignment() as $mykey => $ticketAssign) {
-              if($user==$ticketAssign){
-                //   dump($user->getLastname());
-                unset($listUsers[$key]);
-              }
-            }
-            if($ticket->getAuthor()==$user){
-                unset($listUsers[$key]);
-            }
-            
-        }
-        
-        
-
+        $FilteredlistUsers=$remove->removeLinkedUsers($listUsers,$ticket);
         return $this->render('admin/ticket/edit.html.twig', [
             'ticket' => $ticket, 
             'form' => $form->createView(),
-            'users'=>$listUsers
+            'users'=>$FilteredlistUsers
         ]);
     }
 
@@ -118,7 +106,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("admin/message/supress/{id}", name="message_supress",methods={"DELETE","GET"})
+     * @Route("admin/message/supress/{id}", name="message_supress",methods={"DELETE"})
      */
     public function suppress_message(Request $request, Message $message): Response
     {
@@ -137,25 +125,13 @@ class AdminController extends AbstractController
     /**
      * @Route("admin/assign/{id}", name="assign_user")
      */
-    public function AssignView(Request $request,User $user,TicketRepository $ticketsrepo): Response
+    public function AssignView(Request $request,User $user,TicketRepository $ticketsrepo,RemoveElem $remove): Response
     {
         $listTickets=$ticketsrepo->findAll();
-        foreach ($listTickets as $key => $ticket) {
-            foreach ($user->getTicketsAssignments() as $key => $ticketAssign) {
-              if($ticket==$ticketAssign){
-                unset($listTickets[$key]);
-              }
-            }
-            foreach ($user->getTickets() as $key => $authorTicket) {
-                if($ticket==$authorTicket){
-                    unset($listTickets[$key]);
-                  }
-            }
-        }
-        
+        $FilteredListTickets=$remove->removeLinkedTickets($listTickets,$user);
         return $this->render('admin/user/assign.html.twig', [
             'user' => $user,
-            'tickets'=>$listTickets
+            'tickets'=>$FilteredListTickets
         ]);
          
     }
@@ -210,11 +186,11 @@ class AdminController extends AbstractController
 
      public function resolveTicket(Request $request, Ticket $ticket,ObjectManager $em): Response
         {
-            $ticket->setStatus("done");
+            $ticket->setStatus(Ticket::ferme);
             $em->persist($ticket);
             $em->flush();
             return $this->redirectToRoute('ticket_show',['id'=>$ticket->getId()]);
-     }
+        }
 
      /**
      * @Route("admin/message/open/{id}", name="ticket_reopen")
@@ -222,18 +198,9 @@ class AdminController extends AbstractController
 
      public function reopenTicket(Request $request, Ticket $ticket,ObjectManager $em): Response
         {
-            $ticket->setStatus("en cours");
+            $ticket->setStatus(Ticket::open);
             $em->persist($ticket);
             $em->flush();
             return $this->redirectToRoute('ticket_show',['id'=>$ticket->getId()]);
      }
-
-    //  /**
-    //  * @Route("admin/message/open/{id}", name="ticket_reopen")
-    //  */
-    // public function grantedAdmin(): Response
-    // {
-        
-    // }
-
 }

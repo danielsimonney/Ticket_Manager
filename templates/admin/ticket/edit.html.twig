@@ -4,7 +4,7 @@
 
 {% block body %}
 <pre>
-    {{ dump(ticket) }}
+   
 </pre>
 Un ticket de {{ticket.author}}
 
@@ -13,7 +13,7 @@ Un ticket de {{ticket.author}}
         <button class="btn btn-primary">{{ button_label|default('save the ticket') }}</button>
     {{ form_end(form) }}
 
-click on the user you want to assign it to the current ticket .
+{# click on the user you want to assign it to the current ticket .
 
  <ul class="list-group">
     {% for user in users %}
@@ -27,7 +27,7 @@ click on the user you want to assign it to the current ticket .
 </form>
  </li>
     {% endfor %}
-    </ul>
+    </ul> #}
 
 
     {% endblock %}
