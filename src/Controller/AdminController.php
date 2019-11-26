@@ -112,6 +112,11 @@ class AdminController extends AbstractController
     {
         $ticketId=$message->getTicket()->getId();
         if ($this->isCsrfTokenValid('delete'.$message->getId(), $request->request->get('_token'))) {
+            if($message->getRessource()!=null){
+                $fsObject = new Filesystem(); 
+                $str="uploads/".$message->getRessource();
+                $fsObject->remove($str);
+                }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($message);
             $entityManager->flush();
@@ -150,7 +155,7 @@ class AdminController extends AbstractController
       $myTicket->addTicketsAssignment($myUser);
       $this->addFlash(
         'success',
-        'You have assign'.$myUser->getFirstname().' '.$myUser->getLastname().' to the ticketv' .$myTicket->getTitle().'!'
+        'You have assign'.$myUser->getFirstname().' '.$myUser->getLastname().' to the ticket' .$myTicket->getTitle().'!'
     );
          $entityManager->flush();
      }
@@ -165,16 +170,12 @@ class AdminController extends AbstractController
    {
     $myTicket=$tr->findOneBy(array("id"=>$id_ticket));
     $myUser=$ur->findOneBy(array("id"=>$id_user));
-    
     if ($this->isCsrfTokenValid('delete'.$myTicket->getId(), $request->request->get('_token'))) {
         $entityManager = $this->getDoctrine()->getManager();
-        
      $myTicket->removeTicketsAssignment($myUser);
         $entityManager->flush();
     }
     $users=$ur->findAll();
-
-
     return $this->render('admin/index.html.twig', [
         'users' => $users,
     ]);

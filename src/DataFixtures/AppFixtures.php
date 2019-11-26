@@ -58,7 +58,7 @@ class AppFixtures extends Fixture
                 $ticket=new Ticket;
                 $ticket->setAuthor($user)
                         ->setCreatedAt($faker->dateTime)
-                        ->setStatus("en cours")
+                        ->setStatus(Ticket::open)
                         ->setDescription($faker->text(70))
                         ->setTitle($faker->text(15));
                         $manager->persist($ticket);

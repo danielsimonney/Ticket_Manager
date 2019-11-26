@@ -9,6 +9,14 @@
 </div>
 
 {% if is_granted('ROLE_ADMIN') %}
+<div class="mt-3 mb-3">
+{% if ticket.status is constant('open',ticket) %}
+Le ticket est actuellement ouvert .
+{% else %}
+Le ticket est actuellement fermé .
+{% endif %}
+
+</div>
 Il y'a {{ticket.ticketsAssignment|length}} utilisateurs assignés à ce ticket , ce sont {% for user in ticket.ticketsAssignment %}
     le user {{user.firstname}} {{user.lastname}} {% if loop.last == false %},{% endif %}
 {% endfor %}.
@@ -70,7 +78,7 @@ Il y'a {{ticket.ticketsAssignment|length}} utilisateurs assignés à ce ticket ,
 {% endfor %}
 
 {% endif %}
-{% if ticket.status is constant('open',ticket) %}
+{% if (ticket.status is constant('open',ticket) or is_granted('ROLE_ADMIN')  )%}
 
 
 

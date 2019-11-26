@@ -32,7 +32,7 @@
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ticket.id) }}">
     <button class="btn btn-outline-danger mr-3">Suppress the ticket</button>
 </form>
-{% if ticket.opened %}
+{% if ticket.status is constant('open',ticket) %}
  <a href="{{ path('ticket_resolve', {'id': ticket.id}) }}" class="btn btn-outline-success mr-3 mt-4">Mark the ticket as done</a>
 {% else %}
  <a href="{{ path('ticket_reopen', {'id': ticket.id}) }}" class="btn btn-warning mr-3 mt-4">Reopen the ticket</a>
@@ -44,12 +44,13 @@
         <p class="card-text">{{ticket.description}}</p>
     <a href={{ path('ticket_show',{id:ticket.id}) }} class="btn btn-primary mt-3 mb-3">Go see the ticket</a>
     <div class="card-footer text-muted">
-    {{ticket.createdAt|date("m/d/Y")}}<span class="status">{% if ticket.status == "done" %}
-    statut : Fermé
-    {% else %}
+    {{ticket.createdAt|date("m/d/Y")}}
+    {% if ticket.status is constant('open',ticket) %}
     statut : en cours
+    {% else %}
+      statut : Fermé
     {% endif %}
-    </span>
+  
   </div>
       </div>
     </div>
@@ -77,6 +78,11 @@
     <a href={{ path('ticket_show',{id:ticket.id}) }} class="btn btn-primary mt-3 mb-3">Go see the ticket</a>
     <div class="card-footer text-muted">
     {{ticket.createdAt|date("m/d/Y")}}
+    {% if ticket.status is constant('open',ticket) %}
+    statut : en cours
+    {% else %}
+      statut : Fermé
+    {% endif %}
   </div>
       </div>
     </div>
@@ -100,6 +106,11 @@
     <a href={{ path('ticket_show',{id:ticket.id}) }} class="btn btn-primary mt-3 mb-3">Go see the ticket</a>
     <div class="card-footer text-muted">
     {{ticket.createdAt|date("m/d/Y")}}
+    {% if ticket.status is constant('open',ticket) %}
+    statut : en cours
+    {% else %}
+      statut : Fermé
+    {% endif %}
   </div>
       </div>
     </div>

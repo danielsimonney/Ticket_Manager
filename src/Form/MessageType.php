@@ -44,7 +44,7 @@ class MessageType extends AbstractType
                         // in the associated entity, so you can use the PHP constraint classes
                         'constraints' => [
                             new File([
-                                'maxSize' => '1024k',
+                                'maxSize' => '3000k',
                                 'mimeTypes' => [
                                     'image/jpeg',
                                     'image/png',
@@ -55,6 +55,7 @@ class MessageType extends AbstractType
                             ])
                         ],
                     ])
+
                 ;
                 }     
         

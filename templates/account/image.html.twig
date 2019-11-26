@@ -1,4 +1,5 @@
 {% extends "base.html.twig" %}
+{% form_theme form _self %}
 
 {% block body %}
 
@@ -7,3 +8,16 @@
     {{ form_end(form) }}
 
 {% endblock %}
+
+ {% if app.user.profileImage != null %}
+ {% block _edit_profile_ProfileImage_row %}
+
+<img class="profileImage" src={{ asset('uploads/' ~ app.user.profileImage) }}>
+{{form_errors(form)}}
+{{ form_widget(form, {'attr': {'placeholder': 'Cliquer ici si vous voulez changer l\'image de profil déjà présente '},"required":false}) }}
+{% endblock %}
+ {% endif %}
+
+
+
+

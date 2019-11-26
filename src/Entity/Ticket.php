@@ -76,18 +76,18 @@ class Ticket
         }
     }
 
-    /**
-     * Fonction permettant voir si un ticket est ouvert ou non
-     *
-     * @return boolean
-     */
-    public function isOpened(){
-        if($this->status==self::open){
-            return true;
-        }else{
-            return false;
-        }
-    }
+    // /**
+    //  * Fonction permettant voir si un ticket est ouvert ou non
+    //  *
+    //  * @return boolean
+    //  */
+    // public function isOpened(){
+    //     if($this->status==self::open){
+    //         return true;
+    //     }else{
+    //         return false;
+    //     }
+    // }
 
     public function __toString()
     {
