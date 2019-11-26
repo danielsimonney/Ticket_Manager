@@ -11,6 +11,11 @@
 {% if is_granted('ROLE_ADMIN') %}
 <div class="mt-3 mb-3">
 {% if ticket.status is constant('open',ticket) %}
+ <a href="{{ path('ticket_resolve', {'id': ticket.id}) }}" class="btn btn-outline-success mr-3 mt-4">Mark the ticket as done</a>
+{% else %}
+ <a href="{{ path('ticket_reopen', {'id': ticket.id}) }}" class="btn btn-warning mr-3 mt-4">Reopen the ticket</a>
+{% endif %}
+{% if ticket.status is constant('open',ticket) %}
 Le ticket est actuellement ouvert .
 {% else %}
 Le ticket est actuellement fermé .
