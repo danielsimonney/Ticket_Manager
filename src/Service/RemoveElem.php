@@ -13,31 +13,8 @@ class RemoveElem
                 unset($listTickets[$key]);
               }
             }
-            foreach ($user->getTickets() as $authorTicket) {
-                if($ticket==$authorTicket){
-                  
-                    unset($listTickets[$key]);
-                  }
-            }
         }
         return $listTickets;
     }
-    
-    public function removeLinkedUsers($listUsers,$ticket){
-        foreach ($listUsers as $key => $user) {
-            foreach ($ticket->getTicketsAssignment() as $mykey => $ticketAssign) {
-              if($user==$ticketAssign){
-                
-                unset($listUsers[$key]);
-              }
-            }
-            if($ticket->getAuthor()==$user){
-                unset($listUsers[$key]);
-            }
-            
-        }
-        return $listUsers;
-    }
-
 
 }

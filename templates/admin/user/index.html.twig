@@ -30,6 +30,11 @@ Here is the tickets owned by this user .
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ticket.id) }}">
     <button class="btn btn-danger mr-3">Suppress the ticket</button>
 </form>
+{% if ticket.status is constant('open',ticket) %}
+ <a href="{{ path('ticket_resolve', {'id': ticket.id}) }}" class="btn btn-outline-success mr-3 mt-4">Mark the ticket as done</a>
+{% else %}
+ <a href="{{ path('ticket_reopen', {'id': ticket.id}) }}" class="btn btn-warning mr-3 mt-4">Reopen the ticket</a>
+{% endif %}
 
  </div>
   </div>
@@ -37,7 +42,13 @@ Here is the tickets owned by this user .
         <p class="card-text">{{ticket.description}}</p>
     <a href={{ path('ticket_show',{id:ticket.id}) }} class="btn btn-primary mt-3 mb-3">Go see the ticket</a>
     <div class="card-footer text-muted">
-    {{ticket.createdAt|date("m/d/Y")}}
+    created at:{{ticket.createdAt|date("m/d/Y")}}
+    {% if ticket.status is constant('open',ticket) %}
+    statut : en cours
+    {% else %}
+      statut : Fermé
+    {% endif %}
+  
   </div>
       </div>
     </div>
@@ -76,6 +87,11 @@ Here is the tickets this user is assigns too .
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ticket.id) }}">
     <button class="btn btn-outline-warning mr-3">Remove user from this ticket</button>
 </form>
+{% if ticket.status is constant('open',ticket) %}
+ <a href="{{ path('ticket_resolve', {'id': ticket.id}) }}" class="btn btn-outline-success mr-3 mt-4">Mark the ticket as done</a>
+{% else %}
+ <a href="{{ path('ticket_reopen', {'id': ticket.id}) }}" class="btn btn-warning mr-3 mt-4">Reopen the ticket</a>
+{% endif %}
 
  </div>
   </div>
@@ -84,6 +100,11 @@ Here is the tickets this user is assigns too .
     <a href={{ path('ticket_show',{id:ticket.id}) }} class="btn btn-primary mt-3 mb-3">Go see the ticket</a>
     <div class="card-footer text-muted">
     {{ticket.createdAt|date("m/d/Y")}}
+    {% if ticket.status is constant('open',ticket) %}
+    statut : en cours
+    {% else %}
+      statut : Fermé
+    {% endif %}
   </div>
       </div>
     </div>

@@ -60,11 +60,11 @@ class AdminController extends AbstractController
         }
 
         $listUsers=$userRepo->findAll();
-        $FilteredlistUsers=$remove->removeLinkedUsers($listUsers,$ticket);
+        
         return $this->render('admin/ticket/edit.html.twig', [
             'ticket' => $ticket, 
             'form' => $form->createView(),
-            'users'=>$FilteredlistUsers
+            
         ]);
     }
 
